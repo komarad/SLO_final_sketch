@@ -3,9 +3,14 @@
 Servo myservoL;
 Servo myservoR;
 long timeInMillis = 0;
+int LEFTPIN = 2;
+int RIGHTPIN = 8;
+int DANCEPIN = 13;
 
 void setup() {
-  // put your setup code here, to run once:
+  pinMode(LEFTPIN,INPUT);
+  pinMode(RIGHTPIN,INPUT);
+  pinMode(DANCEPIN,INPUT);
   myservoL.attach(9);
   myservoR.attach(10);
   myservoL.write(10);
@@ -15,29 +20,51 @@ void setup() {
 }
 
 void loop() {
-
-  long mils = millis();
-
-  if(mils%4000 >= 0 && mils%4000 < 700) {
-    rotateRight();
-  } else if (mils%4000 >= 2000 && mils%4000 < 2700) {
-    rotateLeft();
-  } else if(mils%4000 >= 700 && mils%4000 < 1000 || mils%4000 >= 2700 && mils%4000 < 3000) {
-    center();
-  } else if (mils%4000 >= 1000 && mils%4000 <= 1300) {
-    listenUp();
-  }
   
+  if(digitalRead(LEFTPIN) != LOW) {
+    Serial.println("Press 2!!");
+  } else if (digitalRead(RIGHTPIN) != LOW) {
+    Serial.println("Press 8!!");
+  } else if (digitalRead(DANCEPIN) != LOW) {
+    Serial.println("Press 13!!");
+  }
+
+  if(digitalRead(LEFTPIN) != LOW) {
+    myservoL.write(170);
+  } else {
+    myservoL.write(10);
+  }
+
+  if(digitalRead(RIGHTPIN) != LOW) {
+    myservoR.write(170);
+  } else {
+    myservoR.write(10);
+  }
+
+  if(digitalRead(DANCEPIN) != LOW) {
+    doTheDance();
+  }
+}
+
+void doTheDance() {
+  rotateRight();
+  center();
+  rotateLeft();
+  center();
+  listenUp();
+  center();
 }
 
 void rotateRight() {
   myservoL.write(20);
   myservoR.write(170);
+  delay(700);
 }
 
 void rotateLeft() {
   myservoL.write(170);
   myservoR.write(20);
+  delay(700);
 }
 
 void listenUp() {
@@ -52,4 +79,5 @@ void listenUp() {
 void center() {
   myservoL.write(10);
   myservoR.write(10);
+  delay(700);
 }
